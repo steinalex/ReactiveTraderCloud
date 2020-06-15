@@ -1,28 +1,28 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { useState } from 'react'
 import { usePlatform } from 'rt-platforms'
+import { styled } from 'rt-theme'
 
-const PWAInstallBanner = styled.div`
+const PWAInstallBanner = styled.div<{ isHidden: boolean }>`
+  display: ${({ isHidden }) => (isHidden ? 'none' : 'flex')};
   position: absolute;
-  display: flex;
   align-items: center;
   padding: 0 10px;
   top: 60px;
   left: 0;
   width: 100%;
   height: 45px;
-  background-color: #ffffff;
-  color: #000000;
+  background-color: ${({ theme }) => theme.core.textColor};
+  color: ${({ theme }) => theme.core.darkBackground};
   z-index: 100;
 `
 
 const Install = styled.button`
-  background-color: blue;
-  color: white;
+  background-color: ${({ theme }) => theme.accents.primary.base};
+  color: #ffffff;
   padding: 8px 10px;
   margin: 0 10px;
   border-radius: 4px;
-  opacity: 0.5;
+  opacity: 0.7;
   &:hover {
     opacity: 1;
   }
@@ -30,6 +30,7 @@ const Install = styled.button`
 
 export const InstallBanner: React.FC = () => {
   const platform = usePlatform()
+  const [isHidden, setIsHidden] = useState<boolean>(false)
 
   // N.B. In the current version of chrome you have to enable: #bypass-app-banner-engagement-checks
 
@@ -55,11 +56,12 @@ export const InstallBanner: React.FC = () => {
       } else {
         console.log('User dismissed the install prompt')
       }
+      setIsHidden(true)
     })
   }
 
   return (
-    <PWAInstallBanner>
+    <PWAInstallBanner isHidden={isHidden}>
       Experience desktop behaviours from our web app
       <Install onClick={installPWA}>Install</Install>
     </PWAInstallBanner>
