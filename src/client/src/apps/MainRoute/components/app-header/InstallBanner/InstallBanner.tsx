@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { styled } from 'rt-theme'
 import { CrossIcon } from 'rt-components'
 import { usePWABannerPrompt } from './usePWABannerPrompt'
@@ -34,18 +34,19 @@ export const InstallButton = styled.button`
 `
 
 export const InstallBanner: React.FC = () => {
-  const [prompt, promptToInstall, isBannerHidden, hideBanner] = usePWABannerPrompt()
+  const [prompt, promptToInstall] = usePWABannerPrompt()
+  const [hideBanner, setHideBanner] = useState<boolean>(true)
 
   useEffect(() => {
     if (prompt) {
       console.log('PWA_I HAVE A PROMPT!')
-      hideBanner()
+      setHideBanner(false)
     }
-  }, [prompt, hideBanner])
+  }, [prompt])
 
   return (
-    <PWAInstallBanner isHidden={isBannerHidden}>
-      <CrossButton onClick={hideBanner}>{CrossIcon}</CrossButton>
+    <PWAInstallBanner isHidden={hideBanner}>
+      <CrossButton onClick={() => setHideBanner(true)}>{CrossIcon}</CrossButton>
       Experience Reactive Trader on your desktop!
       <InstallButton onClick={promptToInstall}>Install</InstallButton>
     </PWAInstallBanner>

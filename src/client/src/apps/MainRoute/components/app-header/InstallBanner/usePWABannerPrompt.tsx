@@ -10,19 +10,9 @@ interface InstallPrompEvent extends Event {
   prompt(): Promise<void>
 }
 
-export const usePWABannerPrompt = (): [
-  InstallPrompEvent | null,
-  () => void,
-  boolean,
-  () => void
-] => {
+export const usePWABannerPrompt = (): [InstallPrompEvent | null, () => void] => {
   const [prompt, setPrompt] = useState<InstallPrompEvent | null>(null)
-  const [isBannerHidden, setIsBannerHidden] = useState<boolean>(false)
   const platform = usePlatform()
-
-  const hideBanner = () => {
-    setIsBannerHidden(true)
-  }
 
   const promptToInstall = () => {
     if (prompt) {
@@ -50,5 +40,5 @@ export const usePWABannerPrompt = (): [
     }
   }, [platform.type])
 
-  return [prompt, promptToInstall, isBannerHidden, hideBanner]
+  return [prompt, promptToInstall]
 }
