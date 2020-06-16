@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { usePlatform } from 'rt-platforms'
+import React, { useEffect } from 'react'
 import { styled } from 'rt-theme'
+import { CrossIcon } from 'rt-components'
+import { usePWABannerPrompt } from './usePWABannerPrompt'
 
 const PWAInstallBanner = styled.div<{ isHidden: boolean }>`
   display: ${({ isHidden }) => (isHidden ? 'none' : 'flex')};
@@ -16,54 +17,37 @@ const PWAInstallBanner = styled.div<{ isHidden: boolean }>`
   z-index: 100;
 `
 
-const Install = styled.button`
+const CrossButton = styled.div`
+  width: 24px;
+  height: 24px;
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+export const InstallButton = styled.button`
   background-color: ${({ theme }) => theme.accents.primary.base};
   color: #ffffff;
   padding: 8px 10px;
   margin: 0 10px;
   border-radius: 4px;
-  opacity: 0.7;
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export const InstallBanner: React.FC = () => {
-  const platform = usePlatform()
-  const [isHidden, setIsHidden] = useState<boolean>(false)
+  const [prompt, promptToInstall, isBannerHidden, hideBanner] = usePWABannerPrompt()
 
-  // N.B. In the current version of chrome you have to enable: #bypass-app-banner-engagement-checks
-
-  let deferredPrompt: any
-  if (platform.type === 'browser') {
-    window.addEventListener('beforeinstallprompt', (e: any) => {
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault()
-      // Stash the event so it can be triggered later.
-      deferredPrompt = e
-      // Update UI notify the user they can install the PWA
-      console.log('ALEX_before install')
-    })
-  }
-
-  const installPWA = () => {
-    console.log('Install button clicked')
-    deferredPrompt.prompt()
-    // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice.then((choiceResult: any) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the install prompt')
-      } else {
-        console.log('User dismissed the install prompt')
-      }
-      setIsHidden(true)
-    })
-  }
+  useEffect(() => {
+    if (prompt) {
+      console.log('PWA_I HAVE A PROMPT!')
+      hideBanner()
+    }
+  }, [prompt, hideBanner])
 
   return (
-    <PWAInstallBanner isHidden={isHidden}>
-      Experience desktop behaviours from our web app
-      <Install onClick={installPWA}>Install</Install>
+    <PWAInstallBanner isHidden={isBannerHidden}>
+      <CrossButton onClick={hideBanner}>{CrossIcon}</CrossButton>
+      Experience Reactive Trader on your desktop!
+      <InstallButton onClick={promptToInstall}>Install</InstallButton>
     </PWAInstallBanner>
   )
 }
