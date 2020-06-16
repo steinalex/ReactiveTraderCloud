@@ -4,7 +4,7 @@ import { styled } from 'rt-theme'
 import LoginControls from './LoginControls'
 import Logo from './Logo'
 import ThemeSwitcher from './theme-switcher'
-import { InstallBanner } from './InstallBanner/InstallBanner'
+import { InstallBanner } from './InstallBanner'
 const Header: React.FC = ({ children }) => {
   const onLogoClick = useCallback(() => {
     ReactGA.event({
