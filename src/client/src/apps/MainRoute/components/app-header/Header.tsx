@@ -5,12 +5,15 @@ import LoginControls from './LoginControls'
 import Logo from './Logo'
 import ThemeSwitcher from './theme-switcher'
 import { PWABanner, InstallLaunchButton, PWAInstallBanner } from './PWAInstallBanner'
+
+const SESSION = 'PWABanner'
+
 const Header: React.FC = ({ children }) => {
-  const [banner, setBanner] = useState(sessionStorage.getItem('PWABanner') || PWABanner.NotSet)
+  const [banner, setBanner] = useState(sessionStorage.getItem(SESSION) || PWABanner.NotSet)
 
   const updateBanner = (value: PWABanner) => {
     setBanner(value)
-    sessionStorage.setItem('PWABanner', value)
+    sessionStorage.setItem(SESSION, value)
   }
 
   const onLogoClick = useCallback(() => {
