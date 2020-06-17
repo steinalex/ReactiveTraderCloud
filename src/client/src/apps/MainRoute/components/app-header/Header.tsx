@@ -16,6 +16,10 @@ const Header: React.FC = ({ children }) => {
     sessionStorage.setItem(SESSION, value)
   }
 
+  window.addEventListener('appinstalled', evt => {
+    updateBanner(PWABanner.Installed)
+  })
+
   const onLogoClick = useCallback(() => {
     ReactGA.event({
       category: 'RT - Outbound',
