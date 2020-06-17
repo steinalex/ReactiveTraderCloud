@@ -46,6 +46,7 @@ export enum PWABanner {
   Shown = 'shown',
   Hidden = 'hidden',
   NotSet = 'notset',
+  Installed = 'installed',
 }
 
 interface InstallBannerProps {
@@ -53,15 +54,10 @@ interface InstallBannerProps {
   updateBanner: (value: PWABanner) => void
 }
 
-// const SESSION = 'PWABanner'
-
 export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateBanner }) => {
   const [prompt, promptToInstall] = usePWABannerPrompt()
 
-  console.log('ALEX_THE PROMPT', prompt)
-  console.log('ALEX_THE BANNER STATE', banner)
-
-  const isHidden = banner === PWABanner.NotSet || banner === PWABanner.Hidden
+  const isHidden = banner !== PWABanner.Shown || banner === null
 
   useEffect(() => {
     if (prompt && banner !== PWABanner.Hidden) {

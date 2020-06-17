@@ -9,7 +9,9 @@ interface InstallLaunchProps {
 export const InstallLaunchButton: React.FC<InstallLaunchProps> = ({ bannerState }) => {
   const [prompt, setPrompt] = usePWABannerPrompt()
 
-  if (prompt !== null && bannerState === PWABanner.Hidden) {
+  const isHidden = bannerState !== PWABanner.Shown || bannerState === null
+
+  if (prompt !== null && isHidden) {
     return <InstallButton onClick={setPrompt}>Install PWA</InstallButton>
   } else {
     return <></>
