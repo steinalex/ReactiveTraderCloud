@@ -57,7 +57,7 @@ interface InstallBannerProps {
 export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateBanner }) => {
   const [prompt, promptToInstall] = usePWABannerPrompt()
 
-  const isHidden = banner !== PWABanner.Shown || banner === null
+  const isHidden = banner !== PWABanner.Shown
 
   useEffect(() => {
     if (prompt && banner !== PWABanner.Hidden) {
