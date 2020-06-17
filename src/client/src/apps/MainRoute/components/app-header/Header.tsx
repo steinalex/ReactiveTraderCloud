@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import ReactGA from 'react-ga'
 import { styled } from 'rt-theme'
 import LoginControls from './LoginControls'
@@ -11,10 +11,26 @@ const SESSION = 'PWABanner'
 const Header: React.FC = ({ children }) => {
   const [banner, setBanner] = useState(sessionStorage.getItem(SESSION) || PWABanner.NotSet)
 
+  // Always hide the banner when running as a desktop application
+  if (window.matchMedia('(display-mode: standalone)').matches && banner !== PWABanner.Hidden) {
+    setBanner(PWABanner.Hidden)
+  }
+
   const updateBanner = (value: PWABanner) => {
     setBanner(value)
     sessionStorage.setItem(SESSION, value)
   }
+
+  // Hide banner after installation
+  useEffect(() => {
+    const handler = () => {
+      updateBanner(PWABanner.Installed)
+    }
+
+    window.addEventListener('appinstalled', handler)
+
+    return () => window.removeEventListener('appinstalled', handler)
+  }, [])
 
   const onLogoClick = useCallback(() => {
     ReactGA.event({
