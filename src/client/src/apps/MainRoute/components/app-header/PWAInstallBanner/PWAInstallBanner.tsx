@@ -65,6 +65,16 @@ export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateB
     }
   }, [prompt, banner, updateBanner])
 
+  useEffect(() => {
+    const handler = () => {
+      updateBanner(PWABanner.Hidden)
+    }
+
+    window.addEventListener('appinstalled', handler)
+
+    return () => window.removeEventListener('appinstalled', handler)
+  }, [updateBanner])
+
   const closeBanner = () => {
     updateBanner(PWABanner.Hidden)
   }
