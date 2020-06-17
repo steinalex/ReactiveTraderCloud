@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { usePlatform } from 'rt-platforms'
 
-interface InstallPrompEvent extends Event {
+export interface InstallPromptEvent extends Event {
   readonly platforms: string[]
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed'
@@ -10,8 +10,8 @@ interface InstallPrompEvent extends Event {
   prompt(): Promise<void>
 }
 
-export const usePWABannerPrompt = (): [InstallPrompEvent | null, () => void] => {
-  const [prompt, setPrompt] = useState<InstallPrompEvent | null>(null)
+export const usePWABannerPrompt = (): [InstallPromptEvent | null, () => void] => {
+  const [prompt, setPrompt] = useState<InstallPromptEvent | null>(null)
   const platform = usePlatform()
 
   const promptToInstall = () => {
@@ -22,18 +22,18 @@ export const usePWABannerPrompt = (): [InstallPrompEvent | null, () => void] => 
   }
 
   useEffect(() => {
-    const ready = (e: InstallPrompEvent) => {
+    const ready = (e: InstallPromptEvent) => {
       e.preventDefault()
       if (platform.type === 'browser') {
         setPrompt(e)
       }
     }
 
-    window.addEventListener('appinstalled', evt => {
-      console.log('PWA_THE APP IS INSTALLED')
-    })
-
-    window.addEventListener('beforeinstallprompt', ready as any)
+    if (typeof window.installPromptEvent === 'undefined') {
+      window.addEventListener('beforeinstallprompt', ready as any)
+    } else {
+      ready(window.installPromptEvent)
+    }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', ready as any)
