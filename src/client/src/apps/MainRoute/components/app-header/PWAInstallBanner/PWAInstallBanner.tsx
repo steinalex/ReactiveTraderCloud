@@ -60,7 +60,7 @@ export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateB
   const isHidden = banner !== PWABanner.Shown
 
   useEffect(() => {
-    if (prompt && banner !== PWABanner.Hidden) {
+    if (prompt && banner === PWABanner.NotSet) {
       updateBanner(PWABanner.Shown)
     }
   }, [prompt, banner, updateBanner])

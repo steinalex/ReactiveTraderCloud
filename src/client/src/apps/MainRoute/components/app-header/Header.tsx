@@ -24,7 +24,7 @@ const Header: React.FC = ({ children }) => {
   // Hide banner after installation
   useEffect(() => {
     const handler = () => {
-      updateBanner(PWABanner.Hidden)
+      updateBanner(PWABanner.Installed)
     }
 
     window.addEventListener('appinstalled', handler)
