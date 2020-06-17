@@ -55,15 +55,15 @@ interface InstallBannerProps {
 const SESSION = 'PWABanner'
 
 export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateBanner }) => {
-  const [prompt, promptToInstall, isInstalled] = usePWABannerPrompt()
+  const [prompt, promptToInstall] = usePWABannerPrompt()
 
   useEffect(() => {
-    if (isInstalled) {
+    if (prompt === null) {
       sessionStorage.setItem(SESSION, PWABanner.Hidden)
     } else if (prompt && banner === null) {
       sessionStorage.setItem(SESSION, PWABanner.Shown)
     }
-  }, [prompt, banner, isInstalled])
+  }, [prompt, banner])
 
   const closeBanner = () => {
     updateBanner(PWABanner.Hidden)

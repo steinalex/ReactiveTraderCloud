@@ -10,9 +10,8 @@ export interface InstallPromptEvent extends Event {
   prompt(): Promise<void>
 }
 
-export const usePWABannerPrompt = (): [InstallPromptEvent | null, () => void, boolean] => {
+export const usePWABannerPrompt = (): [InstallPromptEvent | null, () => void] => {
   const [prompt, setPrompt] = useState<InstallPromptEvent | null>(null)
-  const [isInstalled, setIsInstalled] = useState<boolean>(false)
   const platform = usePlatform()
 
   const promptToInstall = () => {
@@ -36,14 +35,10 @@ export const usePWABannerPrompt = (): [InstallPromptEvent | null, () => void, bo
       ready(window.installPromptEvent)
     }
 
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true)
-    }
-
     return () => {
       window.removeEventListener('beforeinstallprompt', ready as any)
     }
   }, [platform.type])
 
-  return [prompt, promptToInstall, isInstalled]
+  return [prompt, promptToInstall]
 }
