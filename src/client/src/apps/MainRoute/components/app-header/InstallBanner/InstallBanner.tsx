@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { styled } from 'rt-theme'
 import { CrossIcon } from 'rt-components'
+import { styled } from 'rt-theme'
+import { PWABanner } from './useBannerStorage'
 import { usePWABannerPrompt } from './usePWABannerPrompt'
 
 const PWAInstallBanner = styled.div<{ isHidden: boolean }>`
@@ -33,20 +34,26 @@ export const InstallButton = styled.button`
   border-radius: 4px;
 `
 
+const SESSION = 'PWABanner'
+
 export const InstallBanner: React.FC = () => {
   const [prompt, promptToInstall] = usePWABannerPrompt()
-  const [hideBanner, setHideBanner] = useState<boolean>(true)
+  const [banner, setBanner] = useState(sessionStorage.getItem(SESSION))
 
   useEffect(() => {
-    if (prompt) {
-      console.log('PWA_I HAVE A PROMPT!')
-      setHideBanner(false)
+    if (prompt && banner === null) {
+      sessionStorage.setItem(SESSION, PWABanner.Shown)
     }
-  }, [prompt])
+  }, [prompt, banner])
+
+  const closeBanner = () => {
+    setBanner(PWABanner.Hidden)
+    sessionStorage.setItem(SESSION, PWABanner.Hidden)
+  }
 
   return (
-    <PWAInstallBanner isHidden={hideBanner}>
-      <CrossButton onClick={() => setHideBanner(true)}>{CrossIcon}</CrossButton>
+    <PWAInstallBanner isHidden={banner === PWABanner.Hidden}>
+      <CrossButton onClick={closeBanner}>{CrossIcon}</CrossButton>
       Experience Reactive Trader on your desktop!
       <InstallButton onClick={promptToInstall}>Install</InstallButton>
     </PWAInstallBanner>
