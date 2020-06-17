@@ -1,11 +1,17 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import ReactGA from 'react-ga'
 import { styled } from 'rt-theme'
 import LoginControls from './LoginControls'
 import Logo from './Logo'
 import ThemeSwitcher from './theme-switcher'
-import { InstallBanner } from './InstallBanner'
+import { PWAInstallBanner, PWABanner, InstallLaunchButton } from './PWAInstallBanner'
 const Header: React.FC = ({ children }) => {
+  const [banner, setBanner] = useState(sessionStorage.getItem('PWABanner'))
+
+  const updateBanner = useCallback((value: PWABanner) => {
+    setBanner(value)
+  }, [])
+
   const onLogoClick = useCallback(() => {
     ReactGA.event({
       category: 'RT - Outbound',
@@ -26,10 +32,11 @@ const Header: React.FC = ({ children }) => {
         <HeaderNav>
           <ThemeSwitcher />
           <LoginControls />
+          <InstallLaunchButton bannerState={banner} />
           {children == null ? null : <React.Fragment>{children}</React.Fragment>}
         </HeaderNav>
       </Root>
-      <InstallBanner />
+      <PWAInstallBanner banner={banner} updateBanner={updateBanner} />
     </RootWrapper>
   )
 }
