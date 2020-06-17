@@ -4,13 +4,14 @@ import { styled } from 'rt-theme'
 import LoginControls from './LoginControls'
 import Logo from './Logo'
 import ThemeSwitcher from './theme-switcher'
-import { PWAInstallBanner, PWABanner, InstallLaunchButton } from './PWAInstallBanner'
+import { PWABanner, InstallLaunchButton, PWAInstallBanner } from './PWAInstallBanner'
 const Header: React.FC = ({ children }) => {
-  const [banner, setBanner] = useState(sessionStorage.getItem('PWABanner'))
+  const [banner, setBanner] = useState(sessionStorage.getItem('PWABanner') || PWABanner.NotSet)
 
-  const updateBanner = useCallback((value: PWABanner) => {
+  const updateBanner = (value: PWABanner) => {
     setBanner(value)
-  }, [])
+    sessionStorage.setItem('PWABanner', value)
+  }
 
   const onLogoClick = useCallback(() => {
     ReactGA.event({

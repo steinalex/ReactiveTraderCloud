@@ -45,6 +45,7 @@ export const InstallButton = styled.button`
 export enum PWABanner {
   Shown = 'shown',
   Hidden = 'hidden',
+  NotSet = 'notset',
 }
 
 interface InstallBannerProps {
@@ -52,26 +53,28 @@ interface InstallBannerProps {
   updateBanner: (value: PWABanner) => void
 }
 
-const SESSION = 'PWABanner'
+// const SESSION = 'PWABanner'
 
 export const PWAInstallBanner: React.FC<InstallBannerProps> = ({ banner, updateBanner }) => {
   const [prompt, promptToInstall] = usePWABannerPrompt()
 
+  console.log('ALEX_THE PROMPT', prompt)
+  console.log('ALEX_THE BANNER STATE', banner)
+
+  const isHidden = banner === PWABanner.NotSet || banner === PWABanner.Hidden
+
   useEffect(() => {
-    if (prompt === null) {
-      sessionStorage.setItem(SESSION, PWABanner.Hidden)
-    } else if (prompt && banner === null) {
-      sessionStorage.setItem(SESSION, PWABanner.Shown)
+    if (prompt && banner !== PWABanner.Hidden) {
+      updateBanner(PWABanner.Shown)
     }
-  }, [prompt, banner])
+  }, [prompt, banner, updateBanner])
 
   const closeBanner = () => {
     updateBanner(PWABanner.Hidden)
-    sessionStorage.setItem(SESSION, PWABanner.Hidden)
   }
 
   return (
-    <MainBanner isHidden={banner === PWABanner.Hidden}>
+    <MainBanner isHidden={isHidden}>
       <CrossButton onClick={closeBanner}>{CrossIcon}</CrossButton>
       <BannerText>Experience Reactive Trader on your desktop!</BannerText>
       <InstallButton onClick={promptToInstall}>Install</InstallButton>
