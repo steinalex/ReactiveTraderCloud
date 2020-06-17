@@ -12,14 +12,17 @@ const Header: React.FC = ({ children }) => {
   const [banner, setBanner] = useState(sessionStorage.getItem(SESSION) || PWABanner.NotSet)
 
   // Always hide the banner when running as a desktop application
-  if (window.matchMedia('(display-mode: standalone)').matches && banner !== PWABanner.Hidden) {
-    setBanner(PWABanner.Hidden)
+  if (window.matchMedia('(display-mode: standalone)').matches && banner !== PWABanner.Installed) {
+    setBanner(PWABanner.Installed)
   }
 
-  const updateBanner = (value: PWABanner) => {
-    setBanner(value)
-    sessionStorage.setItem(SESSION, value)
-  }
+  const updateBanner = useCallback(
+    (value: PWABanner) => {
+      setBanner(value)
+      sessionStorage.setItem(SESSION, value)
+    },
+    [setBanner]
+  )
 
   // Hide banner after installation
   useEffect(() => {
@@ -30,7 +33,7 @@ const Header: React.FC = ({ children }) => {
     window.addEventListener('appinstalled', handler)
 
     return () => window.removeEventListener('appinstalled', handler)
-  }, [])
+  }, [updateBanner])
 
   const onLogoClick = useCallback(() => {
     ReactGA.event({
